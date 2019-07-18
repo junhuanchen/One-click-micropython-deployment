@@ -7,32 +7,32 @@ copy "%~0" "%windir%\system32\"
 :: %1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit
 CLS
 echo ***************************************************************************
-echo                           Python ä¸€é”®å®‰è£…è„šæœ¬                        
-echo                         å¦‚å®‰è£…ä¸æˆåŠŸï¼Œè¯·å†æ¬¡æ‰§è¡Œ                      
-echo                       æœ¬ç¨‹åºä»…ä¾› Python çˆ±å¥½è€…ä½¿ç”¨           
+echo                           Python Ò»¼ü°²×°½Å±¾                        
+echo                         Èç°²×°²»³É¹¦£¬ÇëÔÙ´ÎÖ´ĞĞ                      
+echo                       ±¾³ÌĞò½ö¹© Python °®ºÃÕßÊ¹ÓÃ           
 echo ***************************************************************************
 @ping 127.0.0.1 -n 2 >nul
 set setup_flag=0
 
-echo æ­£åœ¨æ£€æŸ¥pythonï¼Œè¯·ç¨å€™...
+echo ÕıÔÚ¼ì²épython£¬ÇëÉÔºò...
 for /f "delims=" %%t in ('python -V') do set str=%%t
 echo %str% | find /c /i "python 3." >nul && set py_installed=1 || set py_installed=0
 if %py_installed% equ 1 (
-	echo python3å·²å®‰è£…ï¼Œå¼€å§‹æ›´æ–°pip
+	echo python3ÒÑ°²×°£¬¿ªÊ¼¸üĞÂpip
 	call %~dp0.\scripts\pip-upgrade.bat
 	goto SETUP_VSCODE
 )
 
 :SEARCH
 set "FileName=python3.dll"
-echo æ­£åœ¨æ£€æŸ¥æ˜¯å¦å·²å®‰è£…pythonï¼Œè¯·ç¨å€™...
+echo ÕıÔÚ¼ì²éÊÇ·ñÒÑ°²×°python£¬ÇëÉÔºò...
 for %%a in (C D E F) do (
     if exist %%a:\nul (
         pushd %%a:\
-		echo æœç´¢ %%a ç›˜
+		echo ËÑË÷ %%a ÅÌ
         for /r %%b in ("*%FileName%") do (
             if /i "%%~nxb" equ "%FileName%" (
-				echo æ‰¾åˆ°å®‰è£…ç›®å½•%%~pdb
+				echo ÕÒµ½°²×°Ä¿Â¼%%~pdb
                 set python_path=%%~pdb
 				cd %%~pdb
 				call %~dp0.\scripts\pip-upgrade.bat
@@ -43,12 +43,12 @@ for %%a in (C D E F) do (
     )
 )
 
-echo å¼€å§‹ä¸‹è½½ï¼Œè¯·ç¨åã€‚ã€‚ã€‚
+echo ¿ªÊ¼ÏÂÔØ£¬ÇëÉÔºó¡£¡£¡£
 start  /wait %~dp0.\scripts\download.bat  -s
-echo ä¸‹è½½å®Œæˆ
+echo ÏÂÔØÍê³É
 
 :SETUP
-echo å¼€å§‹è‡ªåŠ¨å®‰è£…ï¼Œè¯·è€å¿ƒç­‰å€™ï¼Œåˆ‡å‹¿å…³é—­æœ¬çª—å£ï¼ï¼ï¼ï¼
+echo ¿ªÊ¼×Ô¶¯°²×°£¬ÇëÄÍĞÄµÈºò£¬ÇĞÎğ¹Ø±Õ±¾´°¿Ú£¡£¡£¡£¡
 start /wait %~dp0.\scripts\PythonInstaller.exe /quiet  InstallAllUsers=1 PrependPath=1
 set setup_flag=1
 goto SEARCH
@@ -56,7 +56,7 @@ goto SEARCH
 :SET_PATH
 if %setup_flag% equ 1 ( goto SETUP_VSCODE)
 set path_=%path%
-echo è®¾ç½®pythonç¯å¢ƒå˜é‡
+echo ÉèÖÃpython»·¾³±äÁ¿
 echo %path% | find /c /i "%python_path%" >nul && set re=1 || set re=0
 set flag=0
 if %re% equ 0 (
@@ -70,34 +70,34 @@ if %re% equ 0 (
 )
 if %flag% equ 1 (
 	setx path "%path_%" /m
-	echo ç¯å¢ƒå˜é‡æ³¨å…¥æˆåŠŸ
+	echo »·¾³±äÁ¿×¢Èë³É¹¦
 )
 
 :SETUP_VSCODE
-echo å¼€å§‹æ£€æµ‹æ˜¯å¦å®‰è£…vscode
+echo ¿ªÊ¼¼ì²âÊÇ·ñ°²×°vscode
 for /f "delims=" %%t in ('code -v') do set str2=%%t
 echo %str2% | findstr /r "[0-9]." >nul && set code_installed=1 || set code_installed=0
 if %code_installed% equ 1 ( goto SETUP_EXTENSION )
 @rd /S /Q %userprofile%\AppData\Roaming\Code
 @rd /S /Q %userprofile%\.vscode
 start /wait %~dp0.\scripts\download-vscode.bat -s
-echo æ­£åœ¨å®‰è£…vscodeï¼Œè¯·è€å¿ƒç­‰å€™
+echo ÕıÔÚ°²×°vscode£¬ÇëÄÍĞÄµÈºò
 call %~dp0.\scripts\vscode.exe  /VERYSILENT /NORESTARTAPPLICATIONS
 
 :SETUP_EXTENSION
 for %%a in (C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
     if exist %%a:\nul (
         pushd %%a:\
-        echo æœç´¢ %%a ç›˜
+        echo ËÑË÷ %%a ÅÌ
         for /r %%b in ("*Code.exe") do (
             if "%%~nxb" equ "Code.exe" (
-				echo VSCodeå·²å®‰è£…
+				echo VSCodeÒÑ°²×°
 				set vscode_exe=%%b
 				call %~dp0.\scripts\link.bat
 				set vscode_path=%%~pdb.\bin\code
-				echo å¼€å§‹å®‰è£…vscodeæ’ä»¶
+				echo ¿ªÊ¼°²×°vscode²å¼ş
 				start /wait %~dp0.\scripts\install-vscode-extension.bat -s
-				echo vscodeæ’ä»¶å®‰è£…å®Œæˆ	
+				echo vscode²å¼ş°²×°Íê³É	
 				goto end
             )
         )
@@ -106,7 +106,5 @@ for %%a in (C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
 )
 
 :end
-echo å®‰è£…å®Œæˆï¼ï¼
+echo °²×°Íê³É£¡£¡
 rem start https://prod.pandateacher.com/python-manuscript/user-install-manual/windows.html
-
-
