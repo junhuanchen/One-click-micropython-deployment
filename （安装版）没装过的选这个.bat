@@ -1,44 +1,49 @@
 @echo off
-%1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit
+%1 %2 
+ver|find "5.">nul&&goto :st 
+mshta vbscript:createobject("shell.application").shellexecute("%~s0","goto :st","","runas",1)(window.close)&goto :eof 
+:st 
+copy "%~0" "%windir%\system32\" 
+:: %1 mshta vbscript:CreateObject("Shell.Application").ShellExecute("cmd.exe","/c %~s0 ::","","runas",1)(window.close)&&exit
 CLS
 echo ***************************************************************************
-echo **                           Python Ò»¼ü°²×°½Å±¾                         **
+echo **                           Python Ò»ï¿½ï¿½ï¿½ï¿½×°ï¿½Å±ï¿½                         **
 echo **                                                                       **
-echo **                         Èç°²×°²»³É¹¦£¬ÇëÔÙ´ÎÖ´ÐÐ                      **
+echo **                         ï¿½ç°²×°ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù´ï¿½Ö´ï¿½ï¿½                      **
 echo **                                                                       **
-echo **                     ±¾³ÌÐò½ö¹©Python°®ºÃÕß°²×°pythonÊ¹ÓÃ              **
+echo **                     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Pythonï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½×°pythonÊ¹ï¿½ï¿½              **
 echo ***************************************************************************
 @ping 127.0.0.1 -n 2 >nul
 set setup_flag=0
 
-echo ÕýÔÚ¼ì²épython£¬ÇëÉÔºò...
+echo ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½pythonï¿½ï¿½ï¿½ï¿½ï¿½Ôºï¿½...
 for /f "delims=" %%t in ('python -V') do set str=%%t
 echo %str% | find /c /i "python 3." >nul && set py_installed=1 || set py_installed=0
 if %py_installed% equ 1 (
-	echo python3ÒÑ°²×°£¬¿ªÊ¼¸üÐÂpip
+	echo python3ï¿½Ñ°ï¿½×°ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½pip
 	call %~dp0.\scripts\pip-upgrade.bat
 	goto SETUP_VSCODE
 )
 
-echo ¿ªÊ¼ÏÂÔØ£¬ÇëÉÔºó¡£¡£¡£
+echo ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ø£ï¿½ï¿½ï¿½ï¿½Ôºó¡£¡ï¿½ï¿½ï¿½
 start  /wait %~dp0.\scripts\download.bat  -s
-echo ÏÂÔØÍê³É
+echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 :SETUP
-echo ¿ªÊ¼×Ô¶¯°²×°£¬ÇëÄÍÐÄµÈºò£¬ÇÐÎð¹Ø±Õ±¾´°¿Ú£¡£¡£¡£¡
+echo ï¿½ï¿½Ê¼ï¿½Ô¶ï¿½ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÈºï¿½ï¿½ï¿½ï¿½ï¿½Ø±Õ±ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 start /wait %~dp0.\scripts\PythonInstaller.exe /quiet  InstallAllUsers=1 PrependPath=1
 set setup_flag=1
 
 :SEARCH
 set "FileName=python3.dll"
-echo ÕýÔÚ¼ì²éÊÇ·ñÒÑ°²×°python£¬ÇëÉÔºò...
+echo ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ñ°ï¿½×°pythonï¿½ï¿½ï¿½ï¿½ï¿½Ôºï¿½...
 for %%a in (C D E F) do (
     if exist %%a:\nul (
         pushd %%a:\
-		echo ËÑË÷ %%a ÅÌ
+		echo ï¿½ï¿½ï¿½ï¿½ %%a ï¿½ï¿½
         for /r %%b in ("*%FileName%") do (
             if /i "%%~nxb" equ "%FileName%" (
-				echo ÕÒµ½°²×°Ä¿Â¼%%~pdb
+				echo ï¿½Òµï¿½ï¿½ï¿½×°Ä¿Â¼%%~pdb
                 set python_path=%%~pdb
 				cd %%~pdb
 				call %~dp0.\scripts\pip-upgrade.bat
@@ -51,7 +56,7 @@ for %%a in (C D E F) do (
 
 
 :SETUP_VSCODE
-echo ¿ªÊ¼¼ì²âÊÇ·ñ°²×°vscode
+echo ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ç·ï¿½×°vscode
 for /f "delims=" %%t in ('code -v') do set str2=%%t
 echo %str2% | findstr /r "[1-9]." >nul && set code_installed=1 || set code_installed=0
 if %code_installed% equ 1 ( goto SETUP_EXTENSION )
@@ -59,7 +64,7 @@ if %code_installed% equ 1 ( goto SETUP_EXTENSION )
 @rd /S /Q %userprofile%\AppData\Roaming\Code
 @rd /S /Q %userprofile%\.vscode
 start /wait %~dp0.\scripts\download-vscode.bat -s
-echo ÕýÔÚ°²×°vscode£¬ÇëÄÍÐÄµÈºò
+echo ï¿½ï¿½ï¿½Ú°ï¿½×°vscodeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄµÈºï¿½
 call %~dp0.\scripts\vscode.exe  /VERYSILENT /NORESTARTAPPLICATIONS
 
 
@@ -67,16 +72,16 @@ call %~dp0.\scripts\vscode.exe  /VERYSILENT /NORESTARTAPPLICATIONS
 for %%a in (C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
     if exist %%a:\nul (
         pushd %%a:\
-        echo ËÑË÷ %%a ÅÌ
+        echo ï¿½ï¿½ï¿½ï¿½ %%a ï¿½ï¿½
         for /r %%b in ("*Code.exe") do (
             if "%%~nxb" equ "Code.exe" (
-				echo VSCodeÒÑ°²×°
+				echo VSCodeï¿½Ñ°ï¿½×°
 				set vscode_exe=%%b
 				call %~dp0.\scripts\link.bat
 				set vscode_path=%%~pdb.\bin\code
-				echo ¿ªÊ¼°²×°vscode²å¼þ
+				echo ï¿½ï¿½Ê¼ï¿½ï¿½×°vscodeï¿½ï¿½ï¿½
 				start /wait %~dp0.\scripts\install-vscode-extension.bat -s
-				echo vscode²å¼þ°²×°Íê³É
+				echo vscodeï¿½ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½ï¿½
 				goto END
             )
         )
@@ -85,5 +90,5 @@ for %%a in (C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
 )
 
 :END
-echo °²×°Íê³É
+echo ï¿½ï¿½×°ï¿½ï¿½ï¿½
 rem start https://prod.pandateacher.com/python-manuscript/user-install-manual/windows.html
